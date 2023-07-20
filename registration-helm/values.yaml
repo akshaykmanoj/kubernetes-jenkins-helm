@@ -4,11 +4,17 @@
 
 replicaCount: 1
 
-image:
+image1:
   repository: akshaykmanoj/pyreg_image
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest"
+
+image2:
+  repository: postgres 
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -37,7 +43,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
+  type: NodePort
   port: 80
 
 ingress:
