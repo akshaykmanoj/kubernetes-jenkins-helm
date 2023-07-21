@@ -5,7 +5,7 @@ pipeline {
         AWS_ACCOUNT_ID="409486179793"
         AWS_DEFAULT_REGION="us-east-1"
         IMAGE_REPO_NAME="registration-helm"
-        //IMAGE_TAG="latest"
+        IMAGE_TAG="latest"
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
     }
     stages {
@@ -33,7 +33,7 @@ pipeline {
         //         }
         //     }
         // }
-        stage('helmChart tag and  push to ECR') {
+        stage('replace helmChart tag ') {
             steps {
                 //bat "sed -i 's|akshaykmanoj/python_registrationimage:v5|akshaykmanoj/python_registrationimage:${env.BUILD_NUMBER}|g' ./registration-helm/values.yaml"
                 bat """
