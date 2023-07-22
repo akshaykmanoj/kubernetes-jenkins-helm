@@ -45,7 +45,7 @@ pipeline {
         stage('helm package ') {
             steps {
                 //bat 'helm package registration-helm'
-                bat 'C:\\windows-amd64\\helm package E:\\Devops_Projects\\Registration_devops\\registrationproject\\registration-helm'
+                bat 'C:\\windows-amd64\\helm package E:\\Project\\Registration\\registrationproject\\registration-helm'
 
             }
         }
