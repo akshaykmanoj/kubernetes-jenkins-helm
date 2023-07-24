@@ -28,23 +28,23 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: registration-helm
+       - name: registration-helm
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image1.repository }}:{{ .Values.image1.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image1.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.djangoservice.port }}
               protocol: TCP
         - name: registration-helm1
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image1.repository }}:{{ .Values.image1.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image1.pullPolicy }}
+          image: "{{ .Values.image2.repository }}:{{ .Values.image2.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image2.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.postgreservice.port }}
               protocol: TCP
 
           # livenessProbe:
