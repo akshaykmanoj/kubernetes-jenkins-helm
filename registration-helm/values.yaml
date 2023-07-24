@@ -43,8 +43,13 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: NodePort
-  port: 80
+  - name: djangoservice
+    port: 9000
+    type: NodePort
+
+  - name: postgresservice
+    port: 5432
+    type: NodePort
 
 ingress:
   enabled: false
