@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         build_number = "${env.BUILD_ID}"
-        AWS_ACCOUNT_ID="409486179793"
+        AWS_ACCOUNT_ID="409######793"
         AWS_DEFAULT_REGION="us-east-1"
         IMAGE_REPO_NAME="registration-helm"
         IMAGE_TAG="latest"
@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GIT_key_helm', url: 'https://github.com/akshaykmanoj/helm-repo.git']])
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GIT_key_helm', url: 'github repo url']])
             }
         }
         stage('Python Build') {
@@ -22,22 +22,30 @@ pipeline {
                 }
             }
         }
+        stage('Unit Test') {
+            steps {
+                dir('./registration/app1') {
+                    bat 'python ../../manage.py test'
+                }
+            }
+        }
 
-        // stage('docker login build push and logout')  {
-        //     steps{
-        //         withCredentials([string(credentialsId: 'akshaykmanoj', variable: 'docker-pwd')]) {
-        //             bat 'docker login -u akshaykmanoj -p %docker-pwd%'
-        //             bat "docker build -t  akshaykmanoj/python_registrationimage:${env.BUILD_NUMBER} . "
-        //             bat "docker push akshaykmanoj/python_registrationimage:${env.BUILD_NUMBER}"
-        //             bat 'docker logout'
-        //         }
-        //     }
-        // }
+        stage('docker login build push and logout')  {
+            steps{
+                withCredentials([string(credentialsId: 'username', variable: 'docker-pwd')]) {
+                    bat 'docker login -u username -p %docker-pwd%'
+                    bat "docker build -t  docker-imagename:${env.BUILD_NUMBER} . "
+                    bat "docker push docker-imagename:${env.BUILD_NUMBER}"
+                    bat 'docker logout'
+                }
+            }
+        }
+        
         stage('replace helmChart tag ') {
             steps {
-                //bat "sed -i 's|akshaykmanoj/python_registrationimage:v5|akshaykmanoj/python_registrationimage:${env.BUILD_NUMBER}|g' ./registration-helm/values.yaml"
+                //bat "sed -i 's|docker-imagename:v5|docker-imagename:${env.BUILD_NUMBER}|g' ./registration-helm/values.yaml"
                 bat """
-                powershell.exe -Command "((Get-Content -Path './registration-helm/values.yaml') -replace 'akshaykmanoj/python_registrationimage:v5', 'akshaykmanoj/python_registrationimage:${env.BUILD_NUMBER}') | Set-Content -Path './registration-helm/values.yaml'"
+                powershell.exe -Command "((Get-Content -Path './registration-helm/values.yaml') -replace 'docker-imagename:v5', 'docker-imagename:${env.BUILD_NUMBER}') | Set-Content -Path './registration-helm/values.yaml'"
                 """
             }
         }
@@ -53,10 +61,10 @@ pipeline {
             steps {
                 script {
                  withCredentials([aws(credentialsId: 'ecr-credential', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {   
-                    // bat 'aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin 409486179793.dkr.ecr.us-east-1.amazonaws.com'
-                     bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" ecr get-login-password --region us-east-1 | C:\\windows-amd64\\helm registry login --username AWS --password-stdin 409486179793.dkr.ecr.us-east-1.amazonaws.com'
+                    // bat 'aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin 409######793.dkr.ecr.us-east-1.amazonaws.com'
+                     bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" ecr get-login-password --region us-east-1 | C:\\windows-amd64\\helm registry login --username AWS --password-stdin 409######793.dkr.ecr.us-east-1.amazonaws.com'
                      // bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" ecr create-repository --repository-name registration-helm --region us-east-1'
-                     bat "C:\\windows-amd64\\helm push  registration-helm-0.1.0.tgz oci://409486179793.dkr.ecr.us-east-1.amazonaws.com"
+                     bat "C:\\windows-amd64\\helm push  registration-helm-0.1.0.tgz oci://409######793.dkr.ecr.us-east-1.amazonaws.com"
                      bat "del registration-helm-0.1.0.tgz"
                      //bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" ecr delete-repository --repository-name registration-helm --region us-east-1 --force'
                  }
