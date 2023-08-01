@@ -50,7 +50,7 @@ Before you proceed, ensure you have the following prerequisites installed and co
 
 3. Create two pipeline jobs in Jenkins:
 
-- **Build (Integration Pipeline)**: Use the "Jenkinsfile" to build the Docker image, push it to ECR (Elastic Container Registry), and package the Helm Chart.
+- **Build (Integration Pipeline)**: Use the "Jenkinsfile" to Git checkout, Python build and unit test, build the Docker image, package the Helm Chart and push to ECR (Elastic Container Registry).
 
 - **Deploy (Deploy Pipeline)**: Use the "Jenkinsfile-helm" to download the Helm Chart from ECR and deploy it to Minikube.
 
